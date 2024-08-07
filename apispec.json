@@ -1,0 +1,264 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+      "title": "Category RESTful API",
+      "description": "API Spec for Category RESTful API",
+      "version": "1.0.0"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000/api"
+      }
+    ],
+    "paths": {
+      "/notes": {
+        "get": {
+          "security": [{
+            "NoteAuth" : []
+          }],
+          "tags": [
+            "Notes API"
+          ],
+          "description": "List all Notes",
+          "summary": "List all Notes",
+          "responses": {
+            "200": {
+              "description": "Success get all notes",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "type": "number"
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "data": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/Note"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "security": [{
+            "NoteAuth" : []
+          }],
+          "tags": ["Notes API"],
+          "description": "Create new Note",
+          "summary": "Create new Note",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateOrUpdateNote"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success Create Note",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "code" : {
+                        "type": "number"
+                      },
+                      "status" : {
+                        "type": "string"
+                      },
+                      "data" : {
+                        "$ref": "#/components/schemas/Note"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/notes/{noteId}" : {
+        "get" : {
+          "security": [{
+            "NoteAuth" : []
+          }],
+          "tags": ["Notes API"],
+          "summary": "Get note by Id",
+          "description": "Get note by id",
+          "parameters": [
+            {
+              "name": "noteId",
+              "in": "path",
+              "description": "Note Id"
+            }
+          ],
+          "responses": {
+            "200" : {
+              "description": "Success get note",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "code" : {
+                        "type": "number"
+                      },
+                      "status" : {
+                        "type": "string"
+                      },
+                      "data" : {
+                        "$ref": "#/components/schemas/Note"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "put" : {
+          "security": [{
+            "NoteAuth" : []
+          }],
+          "tags": ["Notes API"],
+          "summary": "Update note by Id",
+          "description": "Update note by Id",
+          "parameters": [
+            {
+              "name": "noteId",
+              "in": "path",
+              "description": "Note Id"
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateOrUpdateNote"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200" : {
+              "description": "Success get note",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "code" : {
+                        "type": "number"
+                      },
+                      "status" : {
+                        "type": "string"
+                      },
+                      "data" : {
+                        "$ref": "#/components/schemas/Note"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "security": [{
+            "NoteAuth" : []
+          }],
+          "tags": ["Notes API"],
+          "summary": "Delete note by Id",
+          "description": "Delete note by id",
+          "parameters": [
+            {
+              "name": "noteId",
+              "in": "path",
+              "description": "Note Id"
+            }
+          ],
+          "responses": {
+            "200" : {
+              "description": "Success delete note",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "code" : {
+                        "type": "number"
+                      },
+                      "status" : {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "securitySchemes": {
+        "NoteAuth" : {
+          "type": "apiKey",
+          "in" : "header",
+          "name": "X-API-Key",
+          "description": "Authentication for Notes API"
+        }
+      },
+      "schemas": {
+        "CreateOrUpdateNote" : {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "date": {
+              "type": "string"
+            }
+          }
+        },
+        "Note" : {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number"
+            },
+            "title": {
+              "type": "string"
+            },
+            "description":{
+                "type": "string"
+            },
+            "createdAt":{
+                "type": "string"
+            },
+            "updateAt":{
+                "type": "string"
+            },
+            "deletedAt":{
+                "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
