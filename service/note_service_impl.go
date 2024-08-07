@@ -44,7 +44,7 @@ func (service NoteServiceImpl) Create(ctx context.Context, request web.NoteCreat
 	note = service.NoteRepository.Save(ctx, tx, note)
 	tx.Commit()
 	return web.NoteResponse{
-		ID: note.Id,
+		Id: note.Id,
 		Title: note.Title,
 		Description: note.Description,
 		CreatedAt: note.CreatedAt.String(),
@@ -52,7 +52,7 @@ func (service NoteServiceImpl) Create(ctx context.Context, request web.NoteCreat
 	}
 }
 
-func (service NoteServiceImpl) Update(ctx context.Context, request web.NoteCreateRequest) web.NoteResponse {
+func (service NoteServiceImpl) Update(ctx context.Context, request web.NoteUpdateRequest) web.NoteResponse {
 	err := service.Validate.Struct(request)
 	helper.PanicIfError(err)
 
@@ -76,7 +76,7 @@ func (service NoteServiceImpl) Update(ctx context.Context, request web.NoteCreat
 	tx.Commit()
 
 	return web.NoteResponse{
-		ID: note.Id,
+		Id: note.Id,
 		Title: note.Title,
 		Description: note.Description,
 	}
@@ -114,7 +114,7 @@ func (service NoteServiceImpl) FindById(ctx context.Context, noteId int) web.Not
 	tx.Commit()
 
 	return web.NoteResponse{
-		ID: note.Id,
+		Id: note.Id,
 		Title: note.Title,
 		Description: note.Description,
 	}
@@ -132,7 +132,7 @@ func (service NoteServiceImpl) FindAll(ctx context.Context) []web.NoteResponse {
 	var noteResponses []web.NoteResponse
 	for _, note := range notes {
 		noteResponses = append(noteResponses, web.NoteResponse{
-			ID: note.Id,
+			Id: note.Id,
 			Title: note.Title,
 			Description: note.Description,
 		})
@@ -140,4 +140,3 @@ func (service NoteServiceImpl) FindAll(ctx context.Context) []web.NoteResponse {
 	
 	return noteResponses
 }
-

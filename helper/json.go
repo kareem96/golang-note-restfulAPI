@@ -12,7 +12,7 @@ func WriteToResponseBody(writer http.ResponseWriter, response interface{})  {
 	PanicIfError(err)
 }
 
-func ReadFromBody(request http.Request, result interface{})  {
+func ReadFromRequestBody(request *http.Request, result interface{})  {
 	decoder := json.NewDecoder(request.Body)
 	err := decoder.Decode(result)
 	PanicIfError(err)
