@@ -12,6 +12,10 @@ func ErrorHandler(writer http.ResponseWriter, request *http.Request, err interfa
 	if notFoundError(writer, request, err) {
 		return
 	}
+	if validationErrors(writer, request, err) {
+		return
+	}
+	internalServerError(writer, request, err)
 }
 
 func notFoundError(writer http.ResponseWriter, request *http.Request, err interface{}) bool {
@@ -21,9 +25,9 @@ func notFoundError(writer http.ResponseWriter, request *http.Request, err interf
 		writer.WriteHeader(http.StatusNotFound)
 
 		webResponse := web.WebResponse{
-			Code: http.StatusFound,
+			Code: http.StatusNotFound,
 			Status: "Not Found",
-			Data: exception.Error,
+			Data: exception.Error(),
 		}
 		helper.WriteToResponseBody(writer, webResponse)
 		return true
@@ -31,6 +35,7 @@ func notFoundError(writer http.ResponseWriter, request *http.Request, err interf
 		return false
 	}
 }
+
 
 func validationErrors(writer http.ResponseWriter, request *http.Request, err interface{}) bool  {
 	exception, ok := err.(validator.ValidationErrors)

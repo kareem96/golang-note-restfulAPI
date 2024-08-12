@@ -47,8 +47,9 @@ func (service NoteServiceImpl) Create(ctx context.Context, request web.NoteCreat
 		Id: note.Id,
 		Title: note.Title,
 		Description: note.Description,
-		CreatedAt: note.CreatedAt.String(),
-		UpdatedAt: note.UpdatedAt.String(),
+		CreatedAt: note.CreatedAt,
+		UpdatedAt: note.UpdatedAt,
+		DeletedAt: note.DeletedAt.Valid,
 	}
 }
 
@@ -79,6 +80,9 @@ func (service NoteServiceImpl) Update(ctx context.Context, request web.NoteUpdat
 		Id: note.Id,
 		Title: note.Title,
 		Description: note.Description,
+		CreatedAt: note.CreatedAt,
+		UpdatedAt: note.UpdatedAt,
+		DeletedAt: note.DeletedAt.Valid,
 	}
 }
 
@@ -117,6 +121,9 @@ func (service NoteServiceImpl) FindById(ctx context.Context, noteId int) web.Not
 		Id: note.Id,
 		Title: note.Title,
 		Description: note.Description,
+		CreatedAt: note.CreatedAt,
+		UpdatedAt: note.UpdatedAt,
+		DeletedAt: note.DeletedAt.Valid,
 	}
 }
 
@@ -135,6 +142,9 @@ func (service NoteServiceImpl) FindAll(ctx context.Context) []web.NoteResponse {
 			Id: note.Id,
 			Title: note.Title,
 			Description: note.Description,
+			CreatedAt: note.CreatedAt,
+			UpdatedAt: note.UpdatedAt,
+			DeletedAt: note.DeletedAt.Valid,
 		})
 	}
 	

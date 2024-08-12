@@ -8,7 +8,7 @@ import (
 
 func NewServer(authMiddleware *middleware.AuthMiddleware) *http.Server  {
 	return &http.Server{
-		Addr: "0.0.0.0:3000",
+		Addr: "localhost:3000",
 		Handler: authMiddleware,
 	}
 }

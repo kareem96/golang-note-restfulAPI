@@ -4,6 +4,7 @@ import (
 	"golang-restful-api-crud/helper"
 	"golang-restful-api-crud/model/web"
 	"golang-restful-api-crud/service"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -23,15 +24,22 @@ func NewNoteController(noteService service.NoteService) *NoteControllerImpl{
 
 func (controller NoteControllerImpl) Create(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	noteCreateRequest := web.NoteCreateRequest{}
-	helper.ReadFromRequestBody(request, &noteCreateRequest)
+    helper.ReadFromRequestBody(request, &noteCreateRequest)
 
-	noteResponse := controller.NoteService.Create(request.Context(), noteCreateRequest)
-	webResponse := web.WebResponse{
-		Code: 200,
-		Status: "OK",
-		Data: noteResponse,
-	}
-	helper.WriteToResponseBody(writer, webResponse)
+    log.Printf("Received Create Note Request: %+v", noteCreateRequest) // Log request
+
+    noteResponse := controller.NoteService.Create(request.Context(), noteCreateRequest)
+
+    log.Printf("Create Note Response: %+v", noteResponse) // Log response
+
+    webResponse := web.WebResponse{
+        Code:   200,
+        Status: "OK",
+        Data:   noteResponse,
+    }
+
+    helper.WriteToResponseBody(writer, webResponse)
+    log.Printf("Response sent successfully")
 }
 
 func (controller NoteControllerImpl) Update(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
@@ -71,6 +79,7 @@ func (controller NoteControllerImpl) FindById(writer http.ResponseWriter, reques
 	helper.PanicIfError(err)
 
 	noteResponse := controller.NoteService.FindById(request.Context(), id)
+	
 	webResponse := web.WebResponse{
 		Code: 200,
 		Status: "OK",

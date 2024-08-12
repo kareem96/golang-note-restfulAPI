@@ -2,8 +2,12 @@ package repository
 
 import (
 	"context"
+	"errors"
+
+	"golang-restful-api-crud/exception"
 	"golang-restful-api-crud/helper"
 	"golang-restful-api-crud/model/domain"
+
 	"gorm.io/gorm"
 )
 
@@ -34,14 +38,25 @@ func (repository NoteRepositoryImpl) Delete(ctx context.Context, tx *gorm.DB, no
 
 func (repository NoteRepositoryImpl) FindById(ctx context.Context, tx *gorm.DB, noteId int) (domain.Note, error) {
 	var note domain.Note
-	err := tx.WithContext(ctx).First(&note, noteId).Error
-	helper.PanicIfError(err)
+	err := tx.WithContext(ctx).Where("id = ?", noteId).First(&note).Error
+	// helper.PanicIfError(err)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			// return note, exception.HandlerGormError(err, note.Id)
+
+			return note, exception.NewNotFoundError("Note not found")
+
+		}
+		return note, err
+	}
+	
 	return note, nil
 }
 
 func (repository NoteRepositoryImpl) FindAll(ctx context.Context, tx *gorm.DB) []domain.Note {
 	var notes []domain.Note
 	err := tx.WithContext(ctx).Find(&notes).Error
+	// err := tx.WithContext(ctx).Unscoped().Where("deleted_at IS NOT NULL").Find(&notes).Error
 	helper.PanicIfError(err)
 	return notes
 }
