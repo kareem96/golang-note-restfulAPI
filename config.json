@@ -1,0 +1,18 @@
+{
+    "app": {
+        "name": "Golang Note App",
+        "port": 3000
+    },
+    "database": {
+        "user": "root",
+        "password": "developer",
+        "host": "localhost",
+        "port": "3306",
+        "name": "golang_note",
+        "pool": {
+             "idle": 10,
+             "max": 100,
+             "lifetime": 300
+            }
+    }
+}

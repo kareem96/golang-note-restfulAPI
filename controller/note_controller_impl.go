@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -90,6 +89,20 @@ func (controller NoteControllerImpl) FindById(writer http.ResponseWriter, reques
 
 func (controller NoteControllerImpl) FindAll(writer http.ResponseWriter, request *http.Request, param httprouter.Params) {
 	noteResponses := controller.NoteService.FindAll(request.Context())
+	webResponse := web.WebResponse{
+		Code: 200,
+		Status: "OK",
+		Data: noteResponses,
+	}
+	helper.WriteToResponseBody(writer, webResponse)
+}
+func (controller NoteControllerImpl) FindByUserId(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
+	userId := params.ByName("userId")
+	id, err := strconv.Atoi(userId)
+	if err != nil{
+		helper.PanicIfError(err)
+	}
+	noteResponses := controller.NoteService.FindByUserId(request.Context(), id)
 	webResponse := web.WebResponse{
 		Code: 200,
 		Status: "OK",

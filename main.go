@@ -1,20 +1,26 @@
 package main
 
 import (
+	"fmt"
+	"golang-restful-api-crud/app"
 	"golang-restful-api-crud/helper"
 	"golang-restful-api-crud/middleware"
 	"net/http"
 )
 
-func NewServer(authMiddleware *middleware.AuthMiddleware) *http.Server  {
+func NewServer(authMiddleware *middleware.AuthMiddleware, config app.Config) *http.Server  {
 	return &http.Server{
-		Addr: "localhost:3000",
+		
+		Addr: fmt.Sprintf(":%d", config.AppPort),
+		// Addr: "localhost:3000",
 		Handler: authMiddleware,
 	}
 }
 
 func main() {
-	server := Initialiaze()
+	server := InitInject()
+    fmt.Println("Server setup")
 	err := server.ListenAndServe()
+    fmt.Println("Server is running")
 	helper.PanicIfError(err)
 }

@@ -10,6 +10,7 @@ import (
 	"golang-restful-api-crud/repository"
 	"golang-restful-api-crud/service"
 	"net/http"
+
 	"github.com/go-playground/validator/v10"
 	"github.com/google/wire"
 	"github.com/julienschmidt/httprouter"
@@ -26,17 +27,41 @@ var noteSet = wire.NewSet(
 	wire.Bind(new(controller.NoteController), new(*controller.NoteControllerImpl)),
 )
 
+var userSet = wire.NewSet(
+	repository.NewUserRepository,
+	wire.Bind(new(repository.UserRepository), new(*repository.UserRepositoryImpl)),
+	
+	service.NewUserService,
+	wire.Bind(new(service.UserService), new(*service.UserServiceImpl)),
+
+	controller.NewUserController,
+	wire.Bind(new(controller.UserController), new(*controller.UserControllerImpl)),
+)
+
 func ProvideValidator() *validator.Validate {
 	return validator.New()
 }
 
-func Initialiaze() *http.Server {
+func ProvideConfig() app.Config {
+	return app.NewViper()
+}
+
+func ProvideExcludedRoutes() []string {
+	return []string{
+		"/api/users",
+	}
+}
+
+func InitInject() *http.Server {
 	wire.Build(
+		ProvideConfig,
 		app.OpenConnectionDB,
 		ProvideValidator,
+		ProvideExcludedRoutes,
 		noteSet,
-		app.NewRouter,
+		userSet,
 		wire.Bind(new(http.Handler), new(*httprouter.Router)),
+		app.NewRouter,
 		middleware.NewAuthMiddleware,
 		NewServer,
 	)

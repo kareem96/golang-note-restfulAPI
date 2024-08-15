@@ -19,6 +19,10 @@ func NewNoteRepository() *NoteRepositoryImpl {
 }
 
 func (repository NoteRepositoryImpl) Save(ctx context.Context, tx *gorm.DB, note domain.Note) domain.Note {
+	var user domain.User
+	if err := tx.WithContext(ctx).Where("id = ?", note.UserId).First(&user).Error; err != nil{
+		helper.PanicIfError(exception.NewNotFoundError("User not found"))
+	}
 	err := tx.WithContext(ctx).Create(&note).Error
 	helper.PanicIfError(err)
 	return note
@@ -56,6 +60,13 @@ func (repository NoteRepositoryImpl) FindById(ctx context.Context, tx *gorm.DB, 
 func (repository NoteRepositoryImpl) FindAll(ctx context.Context, tx *gorm.DB) []domain.Note {
 	var notes []domain.Note
 	err := tx.WithContext(ctx).Find(&notes).Error
+	// err := tx.WithContext(ctx).Unscoped().Where("deleted_at IS NOT NULL").Find(&notes).Error
+	helper.PanicIfError(err)
+	return notes
+}
+func (repository NoteRepositoryImpl) FindByUserId(ctx context.Context, tx *gorm.DB, userId int) []domain.Note {
+	var notes []domain.Note
+	err := tx.WithContext(ctx).Where("user_id = ?", userId).Find(&notes).Error
 	// err := tx.WithContext(ctx).Unscoped().Where("deleted_at IS NOT NULL").Find(&notes).Error
 	helper.PanicIfError(err)
 	return notes

@@ -11,4 +11,5 @@ type NoteService interface {
 	Delete(ctx context.Context, noteId int)
 	FindById(ctx context.Context, noteId int) web.NoteResponse
 	FindAll(ctx context.Context) []web.NoteResponse
+	FindByUserId(ctx context.Context, userId int) []web.NoteResponse
 }

@@ -12,4 +12,5 @@ type NoteRepository interface {
 	Delete(ctx context.Context, tx *gorm.DB, note domain.Note)
 	FindById(ctx context.Context, tx *gorm.DB, noteId int) (domain.Note, error)
 	FindAll(ctx context.Context, tx *gorm.DB) []domain.Note
+	FindByUserId(ctx context.Context, tx *gorm.DB, userId int) []domain.Note
 }

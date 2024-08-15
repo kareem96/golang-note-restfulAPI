@@ -19,15 +19,20 @@ import (
 
 // Injectors from injector.go:
 
-func Initialiaze() *http.Server {
+func InitInject() *http.Server {
 	noteRepositoryImpl := repository.NewNoteRepository()
-	db := app.OpenConnectionDB()
+	config := ProvideConfig()
+	db := app.OpenConnectionDB(config)
 	validate := ProvideValidator()
 	noteServiceImpl := service.NewNoteService(noteRepositoryImpl, db, validate)
 	noteControllerImpl := controller.NewNoteController(noteServiceImpl)
-	router := app.NewRouter(noteControllerImpl)
-	authMiddleware := middleware.NewAuthMiddleware(router)
-	server := NewServer(authMiddleware)
+	userRepositoryImpl := repository.NewUserRepository()
+	userServiceImpl := service.NewUserService(userRepositoryImpl, db, validate)
+	userControllerImpl := controller.NewUserController(userServiceImpl)
+	router := app.NewRouter(noteControllerImpl, userControllerImpl)
+	v := ProvideExcludedRoutes()
+	authMiddleware := middleware.NewAuthMiddleware(router, v)
+	server := NewServer(authMiddleware, config)
 	return server
 }
 
@@ -35,6 +40,18 @@ func Initialiaze() *http.Server {
 
 var noteSet = wire.NewSet(repository.NewNoteRepository, wire.Bind(new(repository.NoteRepository), new(*repository.NoteRepositoryImpl)), service.NewNoteService, wire.Bind(new(service.NoteService), new(*service.NoteServiceImpl)), controller.NewNoteController, wire.Bind(new(controller.NoteController), new(*controller.NoteControllerImpl)))
 
+var userSet = wire.NewSet(repository.NewUserRepository, wire.Bind(new(repository.UserRepository), new(*repository.UserRepositoryImpl)), service.NewUserService, wire.Bind(new(service.UserService), new(*service.UserServiceImpl)), controller.NewUserController, wire.Bind(new(controller.UserController), new(*controller.UserControllerImpl)))
+
 func ProvideValidator() *validator.Validate {
 	return validator.New()
+}
+
+func ProvideConfig() app.Config {
+	return app.NewViper()
+}
+
+func ProvideExcludedRoutes() []string {
+	return []string{
+		"/api/users",
+	}
 }

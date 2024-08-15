@@ -8,5 +8,5 @@ type NoteResponse struct {
 	Description string `json:"description"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
-	DeletedAt bool `json:deleted_at`
+	DeletedAt bool `json:"deleted_at"`
 }

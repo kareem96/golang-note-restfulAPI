@@ -39,6 +39,7 @@ func (service NoteServiceImpl) Create(ctx context.Context, request web.NoteCreat
 	note := domain.Note{
 		Title: request.Title,
 		Description: request.Description,
+		UserId: request.UserId,
 	}
 	
 	note = service.NoteRepository.Save(ctx, tx, note)
@@ -134,6 +135,29 @@ func (service NoteServiceImpl) FindAll(ctx context.Context) []web.NoteResponse {
 	}()
 
 	notes := service.NoteRepository.FindAll(ctx, tx)
+	tx.Commit()
+
+	var noteResponses []web.NoteResponse
+	for _, note := range notes {
+		noteResponses = append(noteResponses, web.NoteResponse{
+			Id: note.Id,
+			Title: note.Title,
+			Description: note.Description,
+			CreatedAt: note.CreatedAt,
+			UpdatedAt: note.UpdatedAt,
+			DeletedAt: note.DeletedAt.Valid,
+		})
+	}
+	
+	return noteResponses
+}
+func (service NoteServiceImpl) FindByUserId(ctx context.Context, userId int) []web.NoteResponse {
+	tx := service.DB.Begin()
+	defer func ()  {
+		tx.Rollback()
+	}()
+
+	notes := service.NoteRepository.FindByUserId(ctx, tx, userId)
 	tx.Commit()
 
 	var noteResponses []web.NoteResponse
