@@ -1,2 +1,1 @@
-*.gitignore
-*.wire_gen.go
+wire_gen.go
