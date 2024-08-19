@@ -40,7 +40,8 @@ services:
           - migrate
 
   app:
-    build: .
+    # build: .
+    image: kareem96/app-golang-note:1.0
     ports:
       - "3001:3000"
     depends_on:
