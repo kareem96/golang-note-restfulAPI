@@ -1,12 +1,14 @@
 package controller
 
 import (
+	"encoding/json"
 	"fmt"
 	"golang-restful-api-crud/helper"
 	"golang-restful-api-crud/model/web"
 	"golang-restful-api-crud/service"
 	"net/http"
 	"strconv"
+
 	"github.com/julienschmidt/httprouter"
 )
 
@@ -92,3 +94,17 @@ func (controller UserControllerImpl) FindAll(writer http.ResponseWriter, request
 	helper.WriteToResponseBody(writer, webResponse)
 }
 
+func (controller UserControllerImpl) Login(writer http.ResponseWriter, request *http.Request, params httprouter.Params)  {
+	var loginRequest web.LoginRequest
+	err := json.NewDecoder(request.Body).Decode(&loginRequest)
+	helper.PanicIfError(err)
+
+	response := controller.UserService.Login(request.Context(), loginRequest)
+	
+	webResponse := web.WebResponse{
+		Code: http.StatusOK,
+		Status: "OK",
+		Data: response,
+	}
+	helper.WriteToResponseBody(writer, webResponse)
+}

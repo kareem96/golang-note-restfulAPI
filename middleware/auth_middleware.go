@@ -7,6 +7,7 @@ import (
 	"golang-restful-api-crud/model/web"
 	"net/http"
 	"strings"
+	"time"
 )
 type AuthMiddleware struct {
     Handler         http.Handler
@@ -58,6 +59,23 @@ func (middleware *AuthMiddleware) ServeHTTP(writer http.ResponseWriter, request 
         }
         helper.WriteToResponseBody(writer, webResponse)
         return
+    }
+
+    // Check token expiration and renew if it is about to expire
+    expirationTime := time.Unix(claims.ExpiresAt, 0)
+    if time.Until(expirationTime) < 1*time.Minute {
+        newTokenString, err := helper.GenerateJWT(claims.Issuer, 2*time.Minute)
+        if err != nil {
+            writer.Header().Set("Content-Type", "application/json")
+            writer.WriteHeader(http.StatusInternalServerError)
+            webResponse := web.WebResponse{
+                Code:   http.StatusInternalServerError,
+                Status: "INTERNAL_SERVER_ERROR",
+            }
+            helper.WriteToResponseBody(writer, webResponse)
+            return
+        }
+        writer.Header().Set("Authorization", "Bearer "+newTokenString)
     }
 
     // Add user ID to context

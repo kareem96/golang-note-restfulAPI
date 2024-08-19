@@ -14,4 +14,5 @@ type UserRepository interface {
 	Delete(ctx context.Context, tx *gorm.DB, user domain.User)
 	FindById(ctx context.Context, tx *gorm.DB, userId int) (domain.User, error)
 	FindAll(ctx context.Context, tx *gorm.DB) []domain.User
+	Login(ctx context.Context, tx *gorm.DB, username string) (domain.User, error)
 }

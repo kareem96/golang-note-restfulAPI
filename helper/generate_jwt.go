@@ -3,14 +3,15 @@ package helper
 import (
 	"errors"
 	"time"
+
 	"github.com/dgrijalva/jwt-go"
 )
 
 var jwtKey = []byte("your_secret_key_here") // Make sure to use a secure key
 
-func GenerateJWT(userID string) (string, error) {
+func GenerateJWT(userID string, duration time.Duration) (string, error) {
     claims := &jwt.StandardClaims{
-        ExpiresAt: time.Now().Add(24 * time.Hour).Unix(),
+        ExpiresAt: time.Now().Add(duration).Unix(),
         Issuer:    userID,
     }
 

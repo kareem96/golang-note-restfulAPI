@@ -49,6 +49,7 @@ func ProvideConfig() app.Config {
 func ProvideExcludedRoutes() []string {
 	return []string{
 		"/api/users",
+		"/api/users/login",
 	}
 }
 

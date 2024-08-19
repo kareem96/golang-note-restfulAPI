@@ -15,6 +15,10 @@ func NewRouter(noteController controller.NoteController, userController controll
 
     // Public routes
     router.POST("/api/users", userController.Create)
+    
+    //logn public router
+    router.POST("/api/users/login", userController.Login)
+
 
     // Authenticated routes
     router.GET("/api/notes/:noteId", noteController.FindById)

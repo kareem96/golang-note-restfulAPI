@@ -8,6 +8,7 @@ import (
 	"golang-restful-api-crud/repository"
 	"log"
 	"strconv"
+	"time"
 
 	"github.com/go-playground/validator/v10"
 	"gorm.io/gorm"
@@ -43,7 +44,7 @@ func (service UserServiceImpl) Create(ctx context.Context, request web.RegisterU
     }
 	user = service.UserRepository.Save(ctx, tx, user)
 
-    token, err := helper.GenerateJWT(strconv.Itoa(user.ID))
+    token, err := helper.GenerateJWT(strconv.Itoa(user.ID), 2 * time.Minute)
     if err != nil {
         log.Printf("JWT generation error: %v", err)
         return web.UserResponse{}
@@ -133,3 +134,40 @@ func (service UserServiceImpl) FindAll(ctx context.Context) []web.UserResponse {
 	return userResponses
 }
 
+
+func (service UserServiceImpl) Login(ctx context.Context, request web.LoginRequest) web.UserResponse {
+    tx := service.DB.Begin()
+    defer func() {
+        if r := recover(); r != nil {
+            tx.Rollback()
+            log.Printf("Recovered from panic: %v", r)
+        } else {
+            tx.Commit()
+        }
+    }()
+
+    user, err := service.UserRepository.Login(ctx, tx, request.Name)
+    if err != nil {
+        log.Printf("Error finding user: %v", err)
+        return web.UserResponse{}
+    }
+
+    if !helper.CheckPasswordHash(request.Password, user.Password) {
+        log.Printf("Invalid credentials for user: %s", request.Name)
+        return web.UserResponse{}
+    }
+
+    token, err := helper.GenerateJWT(strconv.Itoa(user.ID), 2*time.Minute)
+    if err != nil {
+        log.Printf("JWT generation error: %v", err)
+        return web.UserResponse{}
+    }
+
+    return web.UserResponse{
+        ID:        user.ID,
+        Name:      user.Name,
+        Token:     token,
+        CreatedAt: user.CreatedAt,
+        UpdatedAt: user.UpdatedAt,
+    }
+}
