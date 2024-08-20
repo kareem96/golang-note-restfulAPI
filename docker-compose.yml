@@ -37,8 +37,6 @@ services:
       mynetwork:
         aliases:
           - migrate
-    # Add this entry to introduce a delay
-    entrypoint: ["sh", "-c", "sleep 30 && migrate -path /migrations -database mysql://root:developer@tcp(db:3306)/golang_note up"]
 
   app:
     build: .
