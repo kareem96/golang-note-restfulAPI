@@ -11,7 +11,8 @@ import (
 func NewServer(authMiddleware *middleware.AuthMiddleware, config app.Config) *http.Server  {
 	return &http.Server{
 		
-		Addr: fmt.Sprintf(":%d", config.AppPort),
+		Addr: fmt.Sprintf("0.0.0.0:%d", config.AppPort),
+		// Addr: fmt.Sprintf("0.0.0.0:%d", config.AppPort),
 		// Addr: "localhost:3000",
 		Handler: authMiddleware,
 	}

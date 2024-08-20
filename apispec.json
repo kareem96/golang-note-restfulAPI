@@ -8,9 +8,220 @@
     "servers": [
       {
         "url": "http://localhost:3000/api"
+      },
+      {
+        "url": "http://103.187.146.18:3001/api"
       }
     ],
     "paths": {
+      "/users/login": {
+        "post": {
+          "security": [{
+            "NoteAuth" : []
+          }],
+          "tags": ["Users API"],
+          "description": "Login new User",
+          "summary": "Login new User",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateOrUpdateUser"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success Login User",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "code" : {
+                        "type": "string"
+                      },
+                      "status" : {
+                        "type": "string"
+                      },
+                      "data" : {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/users": {
+        "post": {
+          "security": [{
+            "NoteAuth" : []
+          }],
+          "tags": ["Users API"],
+          "description": "Create/Register new User",
+          "summary": "Create/Register new User",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateOrUpdateUser"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Success Create User",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "code" : {
+                        "type": "string"
+                      },
+                      "status" : {
+                        "type": "string"
+                      },
+                      "data" : {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/users/{userId}" : {
+        "get" : {
+          "security": [{
+            "NoteAuth" : []
+          }],
+          "tags": ["Users API"],
+          "summary": "Get user by Id",
+          "description": "Get user by id",
+          "parameters": [
+            {
+              "name": "userId",
+              "in": "path",
+              "description": "User Id"
+            }
+          ],
+          "responses": {
+            "200" : {
+              "description": "Success get user",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "code" : {
+                        "type": "number"
+                      },
+                      "status" : {
+                        "type": "string"
+                      },
+                      "data" : {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "put" : {
+          "security": [{
+            "NoteAuth" : []
+          }],
+          "tags": ["Users API"],
+          "summary": "Update note by Id",
+          "description": "Update note by Id",
+          "parameters": [
+            {
+              "name": "noteId",
+              "in": "path",
+              "description": "Note Id"
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateOrUpdateNote"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200" : {
+              "description": "Success get note",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "code" : {
+                        "type": "number"
+                      },
+                      "status" : {
+                        "type": "string"
+                      },
+                      "data" : {
+                        "$ref": "#/components/schemas/Note"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "delete": {
+          "security": [{
+            "NoteAuth" : []
+          }],
+          "tags": ["Users API"],
+          "summary": "Delete note by Id",
+          "description": "Delete note by id",
+          "parameters": [
+            {
+              "name": "noteId",
+              "in": "path",
+              "description": "Note Id"
+            }
+          ],
+          "responses": {
+            "200" : {
+              "description": "Success delete note",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "code" : {
+                        "type": "number"
+                      },
+                      "status" : {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+
+
       "/notes": {
         "get": {
           "security": [{
@@ -212,16 +423,48 @@
         }
       }
     },
+    
     "components": {
       "securitySchemes": {
         "NoteAuth" : {
-          "type": "apiKey",
-          "in" : "header",
-          "name": "X-API-Key",
-          "description": "Authentication for Notes API"
+          "type": "http",
+          "scheme" : "bearer",
+          "bearerFormat": "JWT",
+          "description": "JWT token Authentication for Notes API"
         }
       },
       "schemas": {
+        "User" : {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
+            "token":{
+                "type": "string"
+            },
+            "created_at":{
+                "type": "string"
+            },
+            "updated_at":{
+                "type": "string"
+            }
+          }
+        },
+        "CreateOrUpdateUser" : {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            }
+          }
+        },
         "CreateOrUpdateNote" : {
           "type": "object",
           "properties": {

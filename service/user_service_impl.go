@@ -44,7 +44,7 @@ func (service UserServiceImpl) Create(ctx context.Context, request web.RegisterU
     }
 	user = service.UserRepository.Save(ctx, tx, user)
 
-    token, err := helper.GenerateJWT(strconv.Itoa(user.ID), 2 * time.Minute)
+    token, err := helper.GenerateJWT(strconv.Itoa(user.ID), 5 * time.Minute)
     if err != nil {
         log.Printf("JWT generation error: %v", err)
         return web.UserResponse{}
@@ -157,7 +157,7 @@ func (service UserServiceImpl) Login(ctx context.Context, request web.LoginReque
         return web.UserResponse{}
     }
 
-    token, err := helper.GenerateJWT(strconv.Itoa(user.ID), 2*time.Minute)
+    token, err := helper.GenerateJWT(strconv.Itoa(user.ID), 5 * time.Minute)
     if err != nil {
         log.Printf("JWT generation error: %v", err)
         return web.UserResponse{}

@@ -63,8 +63,8 @@ func (middleware *AuthMiddleware) ServeHTTP(writer http.ResponseWriter, request 
 
     // Check token expiration and renew if it is about to expire
     expirationTime := time.Unix(claims.ExpiresAt, 0)
-    if time.Until(expirationTime) < 1*time.Minute {
-        newTokenString, err := helper.GenerateJWT(claims.Issuer, 2*time.Minute)
+    if time.Until(expirationTime) < 10 * time.Second {
+        newTokenString, err := helper.GenerateJWT(claims.Issuer, 5 * time.Minute)
         if err != nil {
             writer.Header().Set("Content-Type", "application/json")
             writer.WriteHeader(http.StatusInternalServerError)
@@ -85,28 +85,3 @@ func (middleware *AuthMiddleware) ServeHTTP(writer http.ResponseWriter, request 
     // Call the next handler
     middleware.Handler.ServeHTTP(writer, request)
 }
-
-// type AuthMiddleware struct {
-// 	Handler http.Handler
-// }
-
-// func NewAuthMiddleware(handler http.Handler) *AuthMiddleware {
-// 	return &AuthMiddleware{Handler: handler}
-// }
-
-// func (middleware *AuthMiddleware) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
-	// if "RAHASIA" == request.Header.Get("X-API-Key") {
-	// 	//ok
-	// 	middleware.Handler.ServeHTTP(writer, request)
-	// }else{
-	// 	writer.Header().Set("Content-Type", "application/json")
-	// 	writer.WriteHeader(http.StatusUnauthorized)
-		
-	// 	webResponse := web.WebResponse{
-	// 		Code: http.StatusUnauthorized,
-	// 		Status: "UNAUTHORIZED",
-	// 	}
-	// 	helper.WriteToResponseBody(writer, webResponse)
-	// }
-
-// }

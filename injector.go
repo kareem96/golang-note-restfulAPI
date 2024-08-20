@@ -19,7 +19,7 @@ import (
 var noteSet = wire.NewSet(
 	repository.NewNoteRepository,
 	wire.Bind(new(repository.NoteRepository), new(*repository.NoteRepositoryImpl)),
-	
+
 	service.NewNoteService,
 	wire.Bind(new(service.NoteService), new(*service.NoteServiceImpl)),
 
@@ -30,7 +30,7 @@ var noteSet = wire.NewSet(
 var userSet = wire.NewSet(
 	repository.NewUserRepository,
 	wire.Bind(new(repository.UserRepository), new(*repository.UserRepositoryImpl)),
-	
+
 	service.NewUserService,
 	wire.Bind(new(service.UserService), new(*service.UserServiceImpl)),
 
@@ -50,6 +50,12 @@ func ProvideExcludedRoutes() []string {
 	return []string{
 		"/api/users",
 		"/api/users/login",
+		"/api/apispec",
+		"/api/apispecs",
+		"/api/apispec.json",
+		"/swagger-ui/swagger-ui.css",
+		"/swagger-ui/swagger-ui-standalone-preset.js",
+		"/swagger-ui/swagger-ui-bundle.js",
 	}
 }
 
