@@ -6,5 +6,7 @@ CREATE TABLE notes
     created_at TIMESTAMP not NULL default current_timestamp,
     updated_at TIMESTAMP not NULL default current_timestamp on update current_timestamp,
     deleted_at TIMESTAMP NULL,
-    primary key (id)
+    primary key (id),
+    user_id    int null,
+    foreign key fk_notes_user_id (user_id) references users (id)
 ) engine = InnoDB;
