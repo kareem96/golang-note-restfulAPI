@@ -14,7 +14,6 @@ services:
       mynetwork:
         aliases:
           - db
-
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "--silent"]
       interval: 30s
@@ -23,14 +22,14 @@ services:
       timeout: 3s
 
   migrate:
-    image: migrate/migrate   # Use a lightweight image for migrations
+    image: migrate/migrate
     command: [
       "-path", "/migrations",
       "-database", "mysql://root:developer@tcp(db:3306)/golang_note",
       "up"
     ]
     volumes:
-      - ./migrations:/migrations   # Mount your migration files
+      - ./migrations:/migrations
     depends_on:
       db:
         condition: service_healthy
@@ -38,10 +37,11 @@ services:
       mynetwork:
         aliases:
           - migrate
+    # Add this entry to introduce a delay
+    entrypoint: ["sh", "-c", "sleep 30 && migrate -path /migrations -database mysql://root:developer@tcp(db:3306)/golang_note up"]
 
   app:
     build: .
-    # image: kareem96/app-golang-note:1.0
     platform: linux/amd64
     ports:
       - "3000:3000"
