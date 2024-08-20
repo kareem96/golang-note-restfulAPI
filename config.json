@@ -6,7 +6,7 @@
     "database": {
         "user": "root",
         "password": "developer",
-        "host": "172.18.0.1",
+        "host": "db",
         "port": "3306",
         "name": "golang_note",
         "pool": {
