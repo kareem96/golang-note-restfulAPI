@@ -13,5 +13,5 @@ type UserService interface {
 	FindById(ctx context.Context, userId int) web.UserResponse
 	FindAll(ctx context.Context) []web.UserResponse
 	
-	Login(ctx context.Context, request web.LoginRequest) web.UserResponse
+	Login(ctx context.Context, request web.LoginRequest) (web.UserResponse, error)
 }

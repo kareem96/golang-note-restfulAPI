@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"golang-restful-api-crud/exception"
 	"golang-restful-api-crud/helper"
 	"golang-restful-api-crud/model/domain"
 	"golang-restful-api-crud/model/web"
@@ -135,32 +136,26 @@ func (service UserServiceImpl) FindAll(ctx context.Context) []web.UserResponse {
 }
 
 
-func (service UserServiceImpl) Login(ctx context.Context, request web.LoginRequest) web.UserResponse {
+func (service UserServiceImpl) Login(ctx context.Context, request web.LoginRequest) (web.UserResponse, error) {
+    err := service.Validate.Struct(request)
+    if err != nil {
+        return web.UserResponse{}, err
+    }
     tx := service.DB.Begin()
-    defer func() {
-        if r := recover(); r != nil {
-            tx.Rollback()
-            log.Printf("Recovered from panic: %v", r)
-        } else {
-            tx.Commit()
-        }
-    }()
+    defer tx.Commit()
 
     user, err := service.UserRepository.Login(ctx, tx, request.Name)
     if err != nil {
-        log.Printf("Error finding user: %v", err)
-        return web.UserResponse{}
+        return web.UserResponse{}, exception.NewNotFoundError("Invalid user")
     }
 
     if !helper.CheckPasswordHash(request.Password, user.Password) {
-        log.Printf("Invalid credentials for user: %s", request.Name)
-        return web.UserResponse{}
+		return web.UserResponse{}, exception.NewNotFoundError("Invalid password")
     }
 
-    token, err := helper.GenerateJWT(strconv.Itoa(user.ID), 5 * time.Minute)
+    token, err := helper.GenerateJWT(strconv.Itoa(user.ID), 5*time.Minute)
     if err != nil {
-        log.Printf("JWT generation error: %v", err)
-        return web.UserResponse{}
+        return web.UserResponse{}, err
     }
 
     return web.UserResponse{
@@ -169,5 +164,5 @@ func (service UserServiceImpl) Login(ctx context.Context, request web.LoginReque
         Token:     token,
         CreatedAt: user.CreatedAt,
         UpdatedAt: user.UpdatedAt,
-    }
+    }, nil
 }

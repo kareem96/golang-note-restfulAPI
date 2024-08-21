@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"encoding/json"
 	"fmt"
+	"golang-restful-api-crud/exception"
 	"golang-restful-api-crud/helper"
 	"golang-restful-api-crud/model/web"
 	"golang-restful-api-crud/service"
@@ -96,11 +96,15 @@ func (controller UserControllerImpl) FindAll(writer http.ResponseWriter, request
 
 func (controller UserControllerImpl) Login(writer http.ResponseWriter, request *http.Request, params httprouter.Params)  {
 	var loginRequest web.LoginRequest
-	err := json.NewDecoder(request.Body).Decode(&loginRequest)
-	helper.PanicIfError(err)
+	helper.ReadFromRequestBody(request, &loginRequest)
 
-	response := controller.UserService.Login(request.Context(), loginRequest)
-	
+	// helper.PanicIfError(err)
+
+	response, err := controller.UserService.Login(request.Context(), loginRequest)
+	if err != nil{
+		exception.ErrorHandler(writer, request, err)
+		return
+	}
 	webResponse := web.WebResponse{
 		Code: http.StatusOK,
 		Status: "OK",
