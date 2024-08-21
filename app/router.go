@@ -26,16 +26,16 @@ func NewRouter(noteController controller.NoteController, userController controll
 
     // Serve Swagger UI index file
     router.GET("/api/apispec", func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-        http.ServeFile(w, r, "swagger-ui/index.html")
+        http.ServeFile(w, r, "./swagger-ui/index.html")
     })
 
     // Serve the OpenAPI spec
     router.GET("/api/apispec.json", func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-        http.ServeFile(w, r, "apispec.json")
+        http.ServeFile(w, r, ".apispec.json")
     })
 
     router.GET("/api/apispecs", func(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-        http.ServeFile(w, r, "test.html")
+        http.ServeFile(w, r, ".test.html")
     })
 
 

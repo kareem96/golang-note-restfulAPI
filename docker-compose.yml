@@ -43,6 +43,8 @@ services:
     platform: linux/amd64
     ports:
       - "3000:3000"
+    volumes:
+      - ./swagger-ui:/swagger-ui
     depends_on:
       db:
         condition: service_healthy

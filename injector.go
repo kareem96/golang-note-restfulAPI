@@ -53,6 +53,7 @@ func ProvideExcludedRoutes() []string {
 		"/api/apispec",
 		"/api/apispecs",
 		"/api/apispec.json",
+		"/swagger-ui/index.html",
 		"/swagger-ui/swagger-ui.css",
 		"/swagger-ui/swagger-ui-standalone-preset.js",
 		"/swagger-ui/swagger-ui-bundle.js",
